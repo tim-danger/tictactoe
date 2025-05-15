@@ -2,6 +2,7 @@ package org.example.swing;
 
 import org.example.SpielController;
 import org.example.Spielfeld;
+import org.example.SpielfeldZeichner;
 import org.example.Zeichen;
 
 import javax.swing.*;
@@ -11,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.util.Random;
 
 public class View implements ActionListener {
+    // Test
+    private final SpielfeldZeichner zeichner = new SpielfeldZeichner();
     // Controller
     private final SpielController controller = new SpielController();
     // Model
@@ -51,23 +54,56 @@ public class View implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         SpielButton button = (SpielButton) e.getSource();
+        // wir setzen ein "X" oder ein "O" (abhängig vom aktuellen Spieler)
         button.setText(aktuellesZeichen.getValue());
+        // Button wird ausgegraut (damit er nicht mehr geklickt werden kann)
         button.setEnabled(false);
+
+        // Update des Modells
+        setzeWertInSpielfeld(button);
+
+        // Spielstatus bestimmen und weitermachen oder eben nicht
+        SpielStatus status = getStatus(controller, spielfeld);
+        System.out.println(zeichner.zeichneSpielFeld(spielfeld));
+        fahreFortMitSpielFuerStatus(status);
+    }
+
+    private void setzeWertInSpielfeld(SpielButton button) {
         int row = button.getRow();
         int column = button.getColumn();
         spielfeld.setzeZeichen(aktuellesZeichen, row, column);
+    }
+
+    private void fahreFortMitSpielFuerStatus(SpielStatus status) {
+        switch(status) {
+            case GEWONNEN: {
+                zeigeMeldungUndSetzeSpielZurueck(aktuellesZeichen.getValue() + " gewinnt!", frame);
+                break;
+            }
+            case UNENTSCHIEDEN: {
+                zeigeMeldungUndSetzeSpielZurueck("Unentschieden!", frame);
+                break;
+            }
+            default: {
+                wechsleSpieler();
+            }
+        }
+    }
+
+    private void zeigeMeldungUndSetzeSpielZurueck(String meldung, JFrame frame) {
+        JOptionPane.showMessageDialog(frame, meldung);
+        resetGame();
+    }
+
+    private SpielStatus getStatus(SpielController controller, Spielfeld spielfeld) {
         boolean gewonnen = controller.gewonnen(spielfeld);
-        boolean zuEnde = controller.spielZuEnde(spielfeld);
-        if (zuEnde && !gewonnen) {
-            JOptionPane.showMessageDialog(frame, "Tie game!");
-            resetGame();
-        } // noch nicht zu Ende
-        else if (!gewonnen) {
-            switchAktuellesZeichen();
-            frame.setTitle(getTitle());
+        boolean zuEnde = gewonnen || controller.spielZuEnde(spielfeld);
+        if (gewonnen) {
+            return SpielStatus.GEWONNEN;
+        } else if (zuEnde) {
+            return SpielStatus.UNENTSCHIEDEN;
         } else {
-            JOptionPane.showMessageDialog(frame, aktuellesZeichen.getValue() + " wins!");
-            resetGame();
+            return SpielStatus.WEITER;
         }
     }
 
@@ -76,12 +112,13 @@ public class View implements ActionListener {
         return Zeichen.values()[i];
     }
 
-    private void switchAktuellesZeichen() {
+    private void wechsleSpieler() {
         if (aktuellesZeichen == Zeichen.KREUZ) {
             aktuellesZeichen = Zeichen.KREIS;
         } else {
             aktuellesZeichen = Zeichen.KREUZ;
         }
+        frame.setTitle(getTitle());
     }
 
     public void resetGame() {
