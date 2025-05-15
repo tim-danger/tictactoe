@@ -2,6 +2,10 @@ package org.example;
 
 public class SpielfeldZeichner {
 
+    public String zeichneSpielFeld(Spielfeld spielfeld) {
+        return zeichneSpielFeld(spielfeld.getSpielFeld());
+    }
+
     public String zeichneSpielFeld(Zeichen[][] spielfeld) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < spielfeld.length; i++) {

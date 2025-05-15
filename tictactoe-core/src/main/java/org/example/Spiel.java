@@ -1,12 +1,16 @@
 package org.example;
 
+import java.util.Random;
 import java.util.Scanner;
 
 public class Spiel {
+    // Controller
     private final SpielController controller = new SpielController();
+    // Model
     private final Spielfeld spielfeld = new Spielfeld();
+    // Teil der View (zusammen mit der Spiel-Klasse)
     private final SpielfeldZeichner zeichner = new SpielfeldZeichner();
-    private Zeichen aktuellesZeichen = Zeichen.KREUZ;
+    private Zeichen aktuellesZeichen = randomZeichen();
 
     public void spiel() {
 
@@ -24,13 +28,18 @@ public class Spiel {
         System.out.println("Spiel zu Ende! " + (gewonnen ? aktuellesZeichen + " hat gewonnen!" : "Unentschieden"));
     }
 
+    private Zeichen randomZeichen() {
+        int i = new Random().nextInt(Zeichen.values().length - 1);
+        return Zeichen.values()[i];
+    }
+
     private boolean setzeZeichenUndZeichneSpielfeld(Integer row, Integer col) {
         if (spielfeld.setzeZeichen(aktuellesZeichen, row - 1, col - 1)) {
             boolean gewonnen = controller.gewonnen(spielfeld);
             if (!gewonnen) {
                 switchAktuellesZeichen();
             }
-            System.out.println(zeichner.zeichneSpielFeld(spielfeld.getSpielFeld()));
+            System.out.println(zeichner.zeichneSpielFeld(spielfeld));
             return gewonnen;
         } else {
             System.err.println("Das Zeichen an der Stelle " + row + " / " + col + " ist bereits gesetzt! Gib bitte ein Anderes ein!");
