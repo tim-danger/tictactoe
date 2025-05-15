@@ -32,14 +32,15 @@ public class View implements ActionListener {
         panel.setLayout(new GridLayout(3, 3));
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        int counter = -1;
         for (int i = 0; i < spielfeld.getSpielFeld().length; i++) {
             Zeichen[] zeile = spielfeld.getSpielFeld()[i];
             for (int j = 0; j < zeile.length; j++) {
-                int laufenderIndex = i * zeile.length + j;
-                buttons[laufenderIndex] = new SpielButton(i, j);
-                buttons[laufenderIndex].setFont(new Font("Arial", Font.PLAIN, 40));
-                buttons[laufenderIndex].addActionListener(this);
-                panel.add(buttons[laufenderIndex]);
+                counter++;
+                buttons[counter] = new SpielButton(i, j);
+                buttons[counter].setFont(new Font("Arial", Font.PLAIN, 40));
+                buttons[counter].addActionListener(this);
+                panel.add(buttons[counter]);
             }
         }
 
@@ -122,9 +123,9 @@ public class View implements ActionListener {
     }
 
     public void resetGame() {
-        for (int i = 0; i < 9; i++) {
-            buttons[i].setText("");
-            buttons[i].setEnabled(true);
+        for (JButton button : buttons) {
+            button.setText("");
+            button.setEnabled(true);
         }
         spielfeld = new Spielfeld();
         aktuellesZeichen = randomZeichen();
