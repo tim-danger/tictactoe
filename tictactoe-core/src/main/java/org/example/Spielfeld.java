@@ -20,4 +20,13 @@ public class Spielfeld {
         Zeichen[] zeile3 = new Zeichen[] { Zeichen.LEER, Zeichen.LEER, Zeichen.LEER };
         return new Zeichen[][] { zeile1, zeile2, zeile3 };
     }
+
+    public boolean setzeZeichen(Zeichen zeichen, int zeile, int spalte) {
+        if (this.SPIELFELD[zeile][spalte] == Zeichen.LEER) {
+            this.SPIELFELD[zeile][spalte] = zeichen;
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

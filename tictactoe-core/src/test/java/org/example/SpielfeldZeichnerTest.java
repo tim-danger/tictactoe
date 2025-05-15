@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 public class SpielfeldZeichnerTest {
 
-    private SpielfeldZeichner zeichner = new SpielfeldZeichner();
+    private final SpielfeldZeichner zeichner = new SpielfeldZeichner();
 
     @Test
     public void testZeichneSpielfeld() {
@@ -45,6 +45,18 @@ public class SpielfeldZeichnerTest {
         Zeichen[] zeile1 = new Zeichen[] { Zeichen.KREUZ, Zeichen.KREIS, Zeichen.KREUZ };
         Zeichen[] zeile2 = new Zeichen[] { Zeichen.KREIS, Zeichen.KREUZ, Zeichen.KREIS };
         Zeichen[] zeile3 = new Zeichen[] { Zeichen.KREIS, Zeichen.KREIS, Zeichen.KREUZ };
+        Zeichen[][] spielfeld = new Zeichen[][] { zeile1, zeile2, zeile3 };
+        Spielfeld feld = new Spielfeld();
+        feld.setSpielFeld(spielfeld);
+        SpielController controller = new SpielController();
+        Assertions.assertTrue(controller.gewonnen(feld), "Hey, ich hab gewonnen, hier der Beweis: " + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
+    }
+
+    @Test
+    public void testSpielGewonnen3GleicheInDiagonale2() {
+        Zeichen[] zeile1 = new Zeichen[] { Zeichen.LEER, Zeichen.LEER, Zeichen.KREIS };
+        Zeichen[] zeile2 = new Zeichen[] { Zeichen.LEER, Zeichen.KREIS, Zeichen.LEER };
+        Zeichen[] zeile3 = new Zeichen[] { Zeichen.KREIS, Zeichen.LEER, Zeichen.LEER };
         Zeichen[][] spielfeld = new Zeichen[][] { zeile1, zeile2, zeile3 };
         Spielfeld feld = new Spielfeld();
         feld.setSpielFeld(spielfeld);
