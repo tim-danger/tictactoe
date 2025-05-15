@@ -60,6 +60,10 @@ public class View implements ActionListener {
         // Button wird ausgegraut (damit er nicht mehr geklickt werden kann)
         button.setEnabled(false);
 
+        pruefeAufGewinn(button);
+    }
+
+    private void pruefeAufGewinn(SpielButton button) {
         // Update des Modells
         setzeWertInSpielfeld(button);
 
