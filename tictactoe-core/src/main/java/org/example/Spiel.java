@@ -37,7 +37,7 @@ public class Spiel {
         // Spielstatus bestimmen und weitermachen oder eben nicht
         SpielStatus status = getStatus(controller, spielfeld);
         System.out.println(zeichner.zeichneSpielFeld(spielfeld));
-        fahreFortMitSpielFuerStatus(status, unerlaubterZug, row, col);
+        fahreFortMitSpielFuerStatus(status, unerlaubterZug, "Das Zeichen an der Stelle " + row + " / " + col + " ist bereits gesetzt! Gib bitte ein Anderes ein!");
         return status;
     }
 
@@ -45,7 +45,7 @@ public class Spiel {
         return spielfeld.setzeZeichen(aktuellesZeichen, row - 1, column - 1);
     }
 
-    private void fahreFortMitSpielFuerStatus(SpielStatus status, boolean unerlaubterZug, int row, int col) {
+    private void fahreFortMitSpielFuerStatus(SpielStatus status, boolean unerlaubterZug, String errorMessage) {
         switch(status) {
             case GEWONNEN: {
                 System.out.println("Spiel zu Ende! " + aktuellesZeichen + " hat gewonnen!");
@@ -57,7 +57,7 @@ public class Spiel {
             }
             default: {
                 if (unerlaubterZug) {
-                    System.err.println("Das Zeichen an der Stelle " + row + " / " + col + " ist bereits gesetzt! Gib bitte ein Anderes ein!");
+                    System.err.println(errorMessage);
                 } else {
                     wechsleSpieler();
                 }
