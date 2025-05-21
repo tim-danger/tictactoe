@@ -17,7 +17,7 @@ public class Spiel {
     public void spiel() {
 
         // prüfen, ob es einen Gewinn / Unentschieden gibt
-        SpielStatus status = getStatus(controller, spielfeld);
+        SpielStatus status = controller.getStatus(spielfeld);
 
         // Spielschleife
         while (status == SpielStatus.WEITER) {
@@ -25,19 +25,18 @@ public class Spiel {
             Integer row = getInput("Gib bitte Zeilennummer ein:");
             Integer col = getInput("Gib bitte Spaltennummer ein:");
 
-            status = pruefeAufGewinn(row, col);
-        }
+            // Update des Modells
+            boolean unerlaubterZug = !setzeWertInSpielfeld(row, col);
 
+            status = pruefeAufGewinn(unerlaubterZug, "Das Zeichen an der Stelle " + row + " / " + col + " ist bereits gesetzt! Gib bitte ein Anderes ein!");
+        }
     }
 
-    private SpielStatus pruefeAufGewinn(int row, int col) {
-        // Update des Modells
-        boolean unerlaubterZug = !setzeWertInSpielfeld(row, col);
-
+    private SpielStatus pruefeAufGewinn(boolean unerlaubterZug, String message) {
         // Spielstatus bestimmen und weitermachen oder eben nicht
-        SpielStatus status = getStatus(controller, spielfeld);
+        SpielStatus status = controller.getStatus(spielfeld);
         System.out.println(zeichner.zeichneSpielFeld(spielfeld));
-        fahreFortMitSpielFuerStatus(status, unerlaubterZug, "Das Zeichen an der Stelle " + row + " / " + col + " ist bereits gesetzt! Gib bitte ein Anderes ein!");
+        fahreFortMitSpielFuerStatus(status, unerlaubterZug, message);
         return status;
     }
 
@@ -68,18 +67,6 @@ public class Spiel {
     private Zeichen randomZeichen() {
         int i = new Random().nextInt(Zeichen.values().length - 1);
         return Zeichen.values()[i];
-    }
-
-    private SpielStatus getStatus(SpielController controller, Spielfeld spielfeld) {
-        boolean gewonnen = controller.gewonnen(spielfeld);
-        boolean zuEnde = gewonnen || controller.spielZuEnde(spielfeld);
-        if (gewonnen) {
-            return SpielStatus.GEWONNEN;
-        } else if (zuEnde) {
-            return SpielStatus.UNENTSCHIEDEN;
-        } else {
-            return SpielStatus.WEITER;
-        }
     }
 
     private void wechsleSpieler() {

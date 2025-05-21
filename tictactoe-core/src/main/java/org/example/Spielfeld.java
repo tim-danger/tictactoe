@@ -1,17 +1,19 @@
 package org.example;
 
+import java.util.Arrays;
+
 public class Spielfeld {
     private Zeichen[][] SPIELFELD = new Zeichen[3][3];
     public Zeichen[][] getSpielFeld() {
         return this.SPIELFELD;
     }
-    // Methode ist nur für Tests gedacht
-    public void setSpielFeld(Zeichen[][] spielFeld) {
-        this.SPIELFELD = spielFeld;
-    }
 
     public Spielfeld () {
         this.SPIELFELD = leeresSpielFeld();
+    }
+
+    public Spielfeld (Zeichen[][] spielFeld) {
+        this.SPIELFELD = spielFeld;
     }
 
     private Zeichen[][] leeresSpielFeld() {
@@ -28,5 +30,14 @@ public class Spielfeld {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        for (Zeichen[] zeile: SPIELFELD) {
+            result.append(Arrays.toString(zeile)).append(System.lineSeparator());
+        }
+        return result.toString();
     }
 }

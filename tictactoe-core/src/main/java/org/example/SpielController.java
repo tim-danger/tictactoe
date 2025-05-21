@@ -1,8 +1,22 @@
 package org.example;
 
+import org.example.swing.SpielStatus;
+
 import java.util.Arrays;
 
 public class SpielController {
+
+    public SpielStatus getStatus(Spielfeld spielfeld) {
+        boolean gewonnen = gewonnen(spielfeld);
+        boolean zuEnde = gewonnen || spielZuEnde(spielfeld);
+        if (gewonnen) {
+            return SpielStatus.GEWONNEN;
+        } else if (zuEnde) {
+            return SpielStatus.UNENTSCHIEDEN;
+        } else {
+            return SpielStatus.WEITER;
+        }
+    }
 
     public boolean spielZuEnde(Spielfeld spielfeld) {
         return gewonnen(spielfeld) || !leeresElementEnthalten(spielfeld);

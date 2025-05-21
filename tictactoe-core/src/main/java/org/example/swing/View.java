@@ -60,15 +60,15 @@ public class View implements ActionListener {
         // Button wird ausgegraut (damit er nicht mehr geklickt werden kann)
         button.setEnabled(false);
 
-        pruefeAufGewinn(button);
-    }
-
-    private void pruefeAufGewinn(SpielButton button) {
         // Update des Modells
         setzeWertInSpielfeld(button);
 
+        pruefeAufGewinn();
+    }
+
+    private void pruefeAufGewinn() {
         // Spielstatus bestimmen und weitermachen oder eben nicht
-        SpielStatus status = getStatus(controller, spielfeld);
+        SpielStatus status = controller.getStatus(spielfeld);
         System.out.println(zeichner.zeichneSpielFeld(spielfeld));
         fahreFortMitSpielFuerStatus(status);
     }
@@ -98,18 +98,6 @@ public class View implements ActionListener {
     private void zeigeMeldungUndSetzeSpielZurueck(String meldung, JFrame frame) {
         JOptionPane.showMessageDialog(frame, meldung);
         resetGame();
-    }
-
-    private SpielStatus getStatus(SpielController controller, Spielfeld spielfeld) {
-        boolean gewonnen = controller.gewonnen(spielfeld);
-        boolean zuEnde = gewonnen || controller.spielZuEnde(spielfeld);
-        if (gewonnen) {
-            return SpielStatus.GEWONNEN;
-        } else if (zuEnde) {
-            return SpielStatus.UNENTSCHIEDEN;
-        } else {
-            return SpielStatus.WEITER;
-        }
     }
 
     private Zeichen randomZeichen() {
