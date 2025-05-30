@@ -1,6 +1,6 @@
 package org.example;
 
-public class SpielfeldZeichner {
+public class SpielfeldZeichner implements SpielfeldObserver {
 
     public String zeichneSpielFeld(Spielfeld spielfeld) {
         return zeichneSpielFeld(spielfeld.getSpielFeld());
@@ -24,5 +24,10 @@ public class SpielfeldZeichner {
 
     private StringBuilder zeichneHorizontaleLinie() {
         return new StringBuilder("---+---+---" + System.lineSeparator());
+    }
+
+    @Override
+    public void aktualisiere(Zeichen[][] spielfeld) {
+        System.out.println(zeichneSpielFeld(spielfeld));
     }
 }

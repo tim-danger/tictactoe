@@ -1,24 +1,16 @@
 package org.example.swing;
 
 import org.example.SpielController;
-import org.example.Spielfeld;
-import org.example.SpielfeldZeichner;
 import org.example.Zeichen;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
 
 public class View implements ActionListener {
-    // Test
-    private final SpielfeldZeichner zeichner = new SpielfeldZeichner();
     // Controller
-    private final SpielController controller = new SpielController();
-    // Model
-    private Spielfeld spielfeld = new Spielfeld();
-    private Zeichen aktuellesZeichen = randomZeichen();
+    private SpielController controller = new SpielController();
     private static final String TITLE = "Tic-Tac-Toe";
 
     private final JFrame frame;
@@ -33,8 +25,8 @@ public class View implements ActionListener {
         panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         int counter = -1;
-        for (int i = 0; i < spielfeld.getSpielFeld().length; i++) {
-            Zeichen[] zeile = spielfeld.getSpielFeld()[i];
+        for (int i = 0; i < controller.getSpielFeld().length; i++) {
+            Zeichen[] zeile = controller.getSpielFeld()[i];
             for (int j = 0; j < zeile.length; j++) {
                 counter++;
                 buttons[counter] = new SpielButton(i, j);
@@ -50,13 +42,13 @@ public class View implements ActionListener {
     }
 
     private String getTitle() {
-        return TITLE + " " + aktuellesZeichen.getValue() + "'s turn";
+        return TITLE + " " + this.controller.getAktuellesZeichen().getValue() + "'s turn";
     }
 
     public void actionPerformed(ActionEvent e) {
         SpielButton button = (SpielButton) e.getSource();
         // wir setzen ein "X" oder ein "O" (abhängig vom aktuellen Spieler)
-        button.setText(aktuellesZeichen.getValue());
+        button.setText(this.controller.getAktuellesZeichen().getValue());
         // Button wird ausgegraut (damit er nicht mehr geklickt werden kann)
         button.setEnabled(false);
 
@@ -68,21 +60,20 @@ public class View implements ActionListener {
 
     private void pruefeAufGewinn() {
         // Spielstatus bestimmen und weitermachen oder eben nicht
-        SpielStatus status = controller.getStatus(spielfeld);
-        System.out.println(zeichner.zeichneSpielFeld(spielfeld));
+        SpielStatus status = controller.getStatus();
         fahreFortMitSpielFuerStatus(status);
     }
 
     private void setzeWertInSpielfeld(SpielButton button) {
         int row = button.getRow();
         int column = button.getColumn();
-        spielfeld.setzeZeichen(aktuellesZeichen, row, column);
+        controller.setzeZeichen(row, column);
     }
 
     private void fahreFortMitSpielFuerStatus(SpielStatus status) {
         switch(status) {
             case GEWONNEN: {
-                zeigeMeldungUndSetzeSpielZurueck(aktuellesZeichen.getValue() + " gewinnt!", frame);
+                zeigeMeldungUndSetzeSpielZurueck(this.controller.getGewinner().getValue() + " gewinnt!", frame);
                 break;
             }
             case UNENTSCHIEDEN: {
@@ -90,7 +81,7 @@ public class View implements ActionListener {
                 break;
             }
             default: {
-                wechsleSpieler();
+                frame.setTitle(getTitle());
             }
         }
     }
@@ -100,27 +91,12 @@ public class View implements ActionListener {
         resetGame();
     }
 
-    private Zeichen randomZeichen() {
-        int i = new Random().nextInt(Zeichen.values().length - 1);
-        return Zeichen.values()[i];
-    }
-
-    private void wechsleSpieler() {
-        if (aktuellesZeichen == Zeichen.KREUZ) {
-            aktuellesZeichen = Zeichen.KREIS;
-        } else {
-            aktuellesZeichen = Zeichen.KREUZ;
-        }
-        frame.setTitle(getTitle());
-    }
-
     public void resetGame() {
         for (JButton button : buttons) {
             button.setText("");
             button.setEnabled(true);
         }
-        spielfeld = new Spielfeld();
-        aktuellesZeichen = randomZeichen();
+        controller = new SpielController();
         frame.setTitle(getTitle());
     }
 

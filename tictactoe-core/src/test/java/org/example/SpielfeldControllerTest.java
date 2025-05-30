@@ -14,20 +14,20 @@ public class SpielfeldControllerTest {
     @ParameterizedTest
     @MethodSource("spielfeldGewinnUnentschieden")
     public void testGewinnUnentschieden(Spielfeld spielfeld, boolean gewonnen) {
-        SpielController controller = new SpielController();
+        SpielController controller = new SpielController(spielfeld);
         if (gewonnen) {
-            Assertions.assertTrue(controller.gewonnen(spielfeld), "Hey, ich hab gewonnen: " + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
+            Assertions.assertTrue(controller.gewonnen(), "Hey, ich hab gewonnen: " + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
         } else {
-            Assertions.assertFalse(controller.gewonnen(spielfeld), "Hey, ich hab verloren: " + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
+            Assertions.assertFalse(controller.gewonnen(), "Hey, ich hab verloren: " + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
         }
-        Assertions.assertTrue(controller.spielZuEnde(spielfeld), "Spiel ist noch nicht zu Ende: " + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
+        Assertions.assertTrue(controller.spielZuEnde(), "Spiel ist noch nicht zu Ende: " + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
     }
 
     @ParameterizedTest
     @MethodSource("spielfeldNichtBeendet")
     public void testSpielNochNichtFertig(Spielfeld spielfeld) {
-        SpielController controller = new SpielController();
-        Assertions.assertFalse(controller.spielZuEnde(spielfeld), "Sieht das wie ein beendetes Spiel aus? ->" + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
+        SpielController controller = new SpielController(spielfeld);
+        Assertions.assertFalse(controller.spielZuEnde(), "Sieht das wie ein beendetes Spiel aus? ->" + System.lineSeparator() + zeichner.zeichneSpielFeld(spielfeld));
     }
 
     private static Stream<Arguments> spielfeldNichtBeendet() {

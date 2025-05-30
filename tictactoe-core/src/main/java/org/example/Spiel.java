@@ -2,26 +2,19 @@ package org.example;
 
 import org.example.swing.SpielStatus;
 
-import java.util.Random;
 import java.util.Scanner;
 
 public class Spiel {
     // Controller
     private final SpielController controller = new SpielController();
-    // Model
-    private final Spielfeld spielfeld = new Spielfeld();
-    // Teil der View (zusammen mit der Spiel-Klasse)
-    private final SpielfeldZeichner zeichner = new SpielfeldZeichner();
-    private Zeichen aktuellesZeichen = randomZeichen();
 
     public void spiel() {
-
         // prüfen, ob es einen Gewinn / Unentschieden gibt
-        SpielStatus status = controller.getStatus(spielfeld);
+        SpielStatus status = controller.getStatus();
 
         // Spielschleife
         while (status == SpielStatus.WEITER) {
-            System.out.println(aktuellesZeichen + " ist am Zug");
+            System.out.println(controller.getAktuellesZeichen() + " ist am Zug");
             Integer row = getInput("Gib bitte Zeilennummer ein:");
             Integer col = getInput("Gib bitte Spaltennummer ein:");
 
@@ -34,20 +27,19 @@ public class Spiel {
 
     private SpielStatus pruefeAufGewinn(boolean unerlaubterZug, String message) {
         // Spielstatus bestimmen und weitermachen oder eben nicht
-        SpielStatus status = controller.getStatus(spielfeld);
-        System.out.println(zeichner.zeichneSpielFeld(spielfeld));
+        SpielStatus status = controller.getStatus();
         fahreFortMitSpielFuerStatus(status, unerlaubterZug, message);
         return status;
     }
 
     private boolean setzeWertInSpielfeld(int row, int column) {
-        return spielfeld.setzeZeichen(aktuellesZeichen, row - 1, column - 1);
+        return this.controller.setzeZeichen(row - 1, column - 1);
     }
 
     private void fahreFortMitSpielFuerStatus(SpielStatus status, boolean unerlaubterZug, String errorMessage) {
         switch(status) {
             case GEWONNEN: {
-                System.out.println("Spiel zu Ende! " + aktuellesZeichen + " hat gewonnen!");
+                System.out.println("Spiel zu Ende! " + this.controller.getGewinner() + " hat gewonnen!");
                 break;
             }
             case UNENTSCHIEDEN: {
@@ -57,23 +49,8 @@ public class Spiel {
             default: {
                 if (unerlaubterZug) {
                     System.err.println(errorMessage);
-                } else {
-                    wechsleSpieler();
                 }
             }
-        }
-    }
-
-    private Zeichen randomZeichen() {
-        int i = new Random().nextInt(Zeichen.values().length - 1);
-        return Zeichen.values()[i];
-    }
-
-    private void wechsleSpieler() {
-        if (aktuellesZeichen == Zeichen.KREUZ) {
-            aktuellesZeichen = Zeichen.KREIS;
-        } else {
-            aktuellesZeichen = Zeichen.KREUZ;
         }
     }
 

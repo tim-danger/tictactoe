@@ -5,10 +5,24 @@ import org.example.swing.SpielStatus;
 import java.util.Arrays;
 
 public class SpielController {
+    private final Spielfeld spielfeld;
 
-    public SpielStatus getStatus(Spielfeld spielfeld) {
-        boolean gewonnen = gewonnen(spielfeld);
-        boolean zuEnde = gewonnen || spielZuEnde(spielfeld);
+    public SpielController() {
+        this.spielfeld = new Spielfeld();
+    }
+
+    // für Tests
+    public SpielController(Spielfeld spielfeld) {
+        this.spielfeld = spielfeld;
+    }
+
+    public Zeichen getGewinner() {
+        return this.spielfeld.getGewinner();
+    }
+
+    public SpielStatus getStatus() {
+        boolean gewonnen = gewonnen();
+        boolean zuEnde = gewonnen || spielZuEnde();
         if (gewonnen) {
             return SpielStatus.GEWONNEN;
         } else if (zuEnde) {
@@ -18,8 +32,8 @@ public class SpielController {
         }
     }
 
-    public boolean spielZuEnde(Spielfeld spielfeld) {
-        return gewonnen(spielfeld) || !leeresElementEnthalten(spielfeld);
+    public boolean spielZuEnde() {
+        return gewonnen() || !leeresElementEnthalten(this.spielfeld);
     }
 
     private boolean leeresElementEnthalten(Spielfeld spielfeld) {
@@ -32,8 +46,8 @@ public class SpielController {
         return ergebnis;
     }
 
-    public boolean gewonnen(Spielfeld spielfeld) {
-        return dreiInEinerReihe(spielfeld) || dreiInEinerSpalte(spielfeld) || dreiInDerDiagonale(spielfeld);
+    public boolean gewonnen() {
+        return dreiInEinerReihe(this.spielfeld) || dreiInEinerSpalte(this.spielfeld) || dreiInDerDiagonale(this.spielfeld);
     }
 
     private boolean dreiInEinerReihe(Spielfeld spielfeld) {
@@ -65,5 +79,17 @@ public class SpielController {
     private boolean alleElementeGleichUndVerschiedenVonLeer(Zeichen[] zeileSpalteDiagonale) {
         int verschiedeneElemente = Arrays.stream(zeileSpalteDiagonale).distinct().toList().size();
         return verschiedeneElemente == 1 && zeileSpalteDiagonale[0] != Zeichen.LEER;
+    }
+
+    public Zeichen getAktuellesZeichen() {
+        return this.spielfeld.getAktuellesZeichen();
+    }
+
+    public boolean setzeZeichen(int zeile, int spalte) {
+        return this.spielfeld.setzeZeichen(zeile, spalte);
+    }
+
+    public Zeichen[][] getSpielFeld() {
+        return this.spielfeld.getSpielFeld();
     }
 }
